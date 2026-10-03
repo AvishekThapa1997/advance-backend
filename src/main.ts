@@ -1,9 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
-import { EnvService } from './env/env.service.js';
-import { StandardSchemaValidationPipe } from '@nestjs/common';
 import session from 'express-session';
+import { AppModule } from './app.module.js';
 import { SESSION_STORE } from './auth/constants/auth.constants.js';
+import { EnvService } from './env/env.service.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,7 +10,6 @@ async function bootstrap() {
   const sessionStore = app.get(SESSION_STORE);
   app.enableShutdownHooks();
   app.setGlobalPrefix('/api');
-  app.useGlobalPipes(new StandardSchemaValidationPipe());
 
   app.use(
     session({

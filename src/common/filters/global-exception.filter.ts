@@ -7,7 +7,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import type { APIResult } from '../types/index.js';
+import type { APIError, APIFieldError, APIResult } from '../types/index.js';
+import { SchemvalidationException } from '../exception/schema-validation.exception.js';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -20,8 +21,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal server error';
-
-    if (exception instanceof HttpException) {
+    let fields: APIError['fields'];
+    if (
+      exception instanceof HttpException &&
+      !(exception instanceof SchemvalidationException)
+    ) {
       const res = exception.getResponse();
       if (typeof res === 'string') {
         message = res;
@@ -35,6 +39,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           message = resObj.error;
         }
       }
+    } else if (exception instanceof SchemvalidationException) {
+      message = exception.errorObj.message;
+      fields = exception.errorObj.fields;
     } else if (exception instanceof Error) {
       message = exception.message;
     }
@@ -44,9 +51,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       error: {
         message,
         code: status,
+        fields,
       },
     };
-
+    Logger.error('Exception filter: ', errorResponse);
     response.status(status).json(errorResponse);
   }
 }

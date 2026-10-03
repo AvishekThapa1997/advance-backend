@@ -59,12 +59,31 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
-    const isPasswordValid = this.passwordService.comparePassword(
+    const isPasswordValid = await this.passwordService.comparePassword(
       input.password,
       user.password,
     );
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password');
+    }
+
+    return user;
+  }
+
+  async getCurrentUser(userId: number) {
+    const user = await this.db.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
     }
 
     return user;
