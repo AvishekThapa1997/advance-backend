@@ -13,5 +13,6 @@ import { validateEnvironment } from './schema/env.schema.js';
     }),
   ],
   providers: [EnvService],
+  exports: [EnvService],
 })
 export class EnvModule {}
