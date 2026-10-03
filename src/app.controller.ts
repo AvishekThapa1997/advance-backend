@@ -1,6 +1,6 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { AppService } from './app.service.js';
-import { InjectRedis } from './redis/redis.decorator.js';
+import { InjectRedis } from './redis/decorators/redis.decorator.js';
 import type { Redis } from '@upstash/redis';
 
 @Controller()

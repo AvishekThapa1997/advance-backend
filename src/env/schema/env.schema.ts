@@ -9,6 +9,11 @@ export const envSchema = z.object({
   DATABASE_URL: z.string(),
   REDIS_URL: z.string().optional(),
   REDIS_TOKEN: z.string().optional(),
+  BCRYPT_ROUNDS: z.coerce.number(),
+  SESSION_SECRET: z.string(),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
 });
 
 export type EnvironmentVariables = z.infer<typeof envSchema>;
@@ -16,7 +21,7 @@ export type EnvironmentVariables = z.infer<typeof envSchema>;
 export function validateEnvironment(
   config: Record<string, unknown>,
 ): EnvironmentVariables {
-  const result = validateSchema(envSchema, config);
+  const result = envSchema.safeParse(config);
   if (result.error) {
     logger.error(`Environment validation failed: ${result.error.message}`);
     process.exit(1);

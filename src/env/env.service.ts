@@ -9,6 +9,6 @@ export class EnvService {
   ) {}
 
   getEnvironment<K extends keyof EnvironmentVariables>(key: K) {
-    return this.configService.get<EnvironmentVariables[K]>(key);
+    return this.configService.getOrThrow<EnvironmentVariables[K]>(key);
   }
 }

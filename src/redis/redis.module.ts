@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { REDIS_CLIENT } from './redis.constants.js';
+import { REDIS_CLIENT } from './constants/redis.constants.js';
 import { EnvService } from '../env/env.service.js';
 import { Redis } from '@upstash/redis';
 
