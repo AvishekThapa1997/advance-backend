@@ -11,12 +11,7 @@ async function bootstrap() {
   const sessionStore = app.get(SESSION_STORE);
   app.enableShutdownHooks();
   app.setGlobalPrefix('/api');
-  app.enableVersioning();
-  app.useGlobalPipes(
-    new StandardSchemaValidationPipe({
-      validateCustomDecorators: true,
-    }),
-  );
+  app.useGlobalPipes(new StandardSchemaValidationPipe());
 
   app.use(
     session({

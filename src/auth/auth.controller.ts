@@ -13,7 +13,12 @@ import {
   AUTH_SESSION_COOKIE,
   AUTH_SESSION_TTL_SECONDS,
 } from './constants/auth.constants.js';
-import type { SignInDto, SignUpDto } from './schema/auth.schema.js';
+import {
+  signInSchema,
+  signUpSchema,
+  type SignInDto,
+  type SignUpDto,
+} from './schema/auth.schema.js';
 import { Public } from './decorators/auth.decorators.js';
 
 @Controller('auth')
@@ -23,7 +28,10 @@ export class AuthController {
   @Post('signup')
   @Public()
   @HttpCode(HttpStatus.CREATED)
-  async signUp(@Body() body: SignUpDto, @Res() request: Request) {
+  async signUp(
+    @Body({ schema: signUpSchema }) body: SignUpDto,
+    @Res() request: Request,
+  ) {
     const user = await this.authService.signUp(body);
     request.session.userId = user.id;
     return user;
@@ -32,27 +40,31 @@ export class AuthController {
   @Post('signin')
   @Public()
   @HttpCode(HttpStatus.OK)
-  async signIn(@Body() body: SignInDto, @Req() request: Request) {
+  async signIn(
+    @Body({ schema: signInSchema }) body: SignInDto,
+    @Req() request: Request,
+  ) {
     const user = await this.authService.signIn(body);
     request.session.userId = user.id;
     return user;
   }
 
-  @Post('signout')
-  async signOut(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    // const sessionId = this.getSessionId(request);
+  // @Post('signout')
+  // async signOut(
+  //   @Req() request: Request,
+  //   @Res({ passthrough: true }) response: Response,
+  // ) {
+  //   // const sessionId = this.getSessionId(request);
+  //   //request.session.destroy()
 
-    // if (sessionId) {
-    //   //await this.authService.signOut(sessionId);
-    // }
+  //   // if (sessionId) {
+  //   //   //await this.authService.signOut(sessionId);
+  //   // }
 
-    response.clearCookie(AUTH_SESSION_COOKIE);
+  //   response.clearCookie(AUTH_SESSION_COOKIE);
 
-    return {
-      success: true,
-    };
-  }
+  //   return {
+  //     success: true,
+  //   };
+  // }
 }
