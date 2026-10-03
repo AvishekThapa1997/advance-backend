@@ -7,6 +7,8 @@ const logger = new Logger('EnvValidation');
 export const envSchema = z.object({
   PORT: z.coerce.number().int().optional().default(3000),
   DATABASE_URL: z.string(),
+  REDIS_URL: z.string().optional(),
+  REDIS_TOKEN: z.string().optional(),
 });
 
 export type EnvironmentVariables = z.infer<typeof envSchema>;

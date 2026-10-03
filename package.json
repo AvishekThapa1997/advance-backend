@@ -24,7 +24,6 @@
     "prisma:migrate": "prisma migrate dev",
     "postinstall": "prisma generate"
   },
-
   "dependencies": {
     "@nestjs/common": "^12.0.1",
     "@nestjs/config": "^12.0.1",
@@ -33,6 +32,7 @@
     "@nestjs/platform-express": "^12.0.1",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "@upstash/redis": "^1.39.0",
     "dotenv": "^18.0.5",
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",

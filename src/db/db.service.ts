@@ -12,7 +12,6 @@ export class DbService
     const adapter = new PrismaPg({
       connectionString: envService.getEnvironment('DATABASE_URL'),
     });
-
     super({ adapter });
   }
 
