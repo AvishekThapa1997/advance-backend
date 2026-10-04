@@ -8,9 +8,10 @@ import { AuthModule } from './auth/auth.module.js';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
-  imports: [EnvModule, DbModule, RedisModule, AuthModule],
+  imports: [EnvModule, DbModule, RedisModule, AuthModule, UsersModule],
   controllers: [AppController],
   providers: [
     AppService,

@@ -1,7 +1,6 @@
 import {
   createParamDecorator,
   ExecutionContext,
-  Inject,
   SetMetadata,
 } from '@nestjs/common';
 import { AuthRequest } from '../types/auth.types.js';

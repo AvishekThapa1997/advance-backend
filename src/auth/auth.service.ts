@@ -3,27 +3,21 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { DbService } from '../db/db.service.js';
-import { SignInDto, SignUpDto } from './schema/auth.schema.js';
+import { InjectUserRepository } from '../users/decorators/users.decorators.js';
+import type { IUserRepository } from '../users/repository/user.repository.js';
 import { PasswordService } from './providers/password-helper.provider.js';
+import { SignInDto, SignUpDto } from './schema/auth.schema.js';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly db: DbService,
     private readonly passwordService: PasswordService,
+    @InjectUserRepository()
+    private readonly userRespository: IUserRepository,
   ) {}
 
   async signUp(input: SignUpDto) {
-    const existingUser = await this.db.user.findUnique({
-      where: {
-        email: input.email,
-      },
-      select: {
-        id: true,
-      },
-    });
-
+    const existingUser = await this.userRespository.findByEmail(input.email);
     if (existingUser) {
       throw new ConflictException('Email is already registered');
     }
@@ -32,30 +26,20 @@ export class AuthService {
       input.password,
     );
 
-    const user = await this.db.user.create({
-      data: {
-        name: input.name,
-        email: input.email,
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+    const user = await this.userRespository.createUser({
+      name: input.name,
+      email: input.email,
+      password: hashedPassword,
     });
 
     return user;
   }
 
   async signIn(input: SignInDto) {
-    const user = await this.db.user.findUnique({
-      where: {
-        email: input.email,
-      },
-    });
+    const user = await this.userRespository.findByEmail(
+      input.email,
+      /*include password*/ true,
+    );
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
@@ -66,26 +50,14 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password');
     }
-
     return user;
   }
 
   async getCurrentUser(userId: number) {
-    const user = await this.db.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-    });
-
+    const user = await this.userRespository.findById(userId);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-
     return user;
   }
 }

@@ -8,14 +8,12 @@ import {
   Post,
   Req,
   Res,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { ZodValidationPipe } from '../common/pipe/zod-validation.pipe.js';
 import { AuthService } from './auth.service.js';
-import {
-  AUTH_SESSION_COOKIE
-} from './constants/auth.constants.js';
+import { AUTH_SESSION_COOKIE } from './constants/auth.constants.js';
 import { Auth, UserId } from './decorators/auth.decorators.js';
 import { AuthGuard } from './guards/auth.guards.js';
 import {
@@ -55,7 +53,6 @@ export class AuthController {
   @Get('session')
   @HttpCode(HttpStatus.OK)
   @Auth()
-  @UseGuards(AuthGuard)
   async getSessionUser(@UserId() userId: number) {
     return this.authService.getCurrentUser(userId);
   }
@@ -63,7 +60,6 @@ export class AuthController {
   @Post('signout')
   @HttpCode(HttpStatus.OK)
   @Auth()
-  @UseGuards(AuthGuard)
   async signOut(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,

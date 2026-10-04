@@ -7,7 +7,10 @@ import { AuthGuard } from './guards/auth.guards.js';
 import { SESSION_STORE } from './constants/auth.constants.js';
 import { SessionStoreService } from './providers/session-store.provider.js';
 
+import { UsersModule } from '../users/users.module.js';
+
 @Module({
+  imports: [UsersModule],
   controllers: [AuthController],
   providers: [
     AuthService,
